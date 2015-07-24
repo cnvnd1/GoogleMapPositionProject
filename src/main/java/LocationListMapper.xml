@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="position">
+	<select id = "getposition" resultType="com.test.entity.IndividualLocationDTO" parameterType="map">
+	select l.userId as indvUserid, b.lat as indvLat, b.lng as indvLng
+	from locationList l, beaconList b
+	where l.beaconId = b.beaconId
+	and l.userId = #{indvUserid}
+	and substr(l.MTIME, 1, 10) = #{indvMtime}
+	and substr(l.MTIME, 12, 2) = #{indvMhour}
+	</select>
+	
+	<select id = "getTotalPosition" resultType="com.test.entity.BeaconWithUserIdDTO" parameterType="map">
+	select l.userId as userId, b.lat as lat , b.lng as lng
+	from locationList l , beaconList b
+	where l.BEACONID = b.BEACONID 
+	and substr(l.MTIME, 1, 10) = #{totalMtime}
+	and substr(l.MTIME, 12, 2) = #{totalMhour}
+	</select>
+	
+	<select id="getLocationAtHour" resultType="com.test.entity.BeaconWithUserIdDTO" parameterType="string">
+	select b.LAT, b.LNG 
+	from beaconList b , locationList l 
+	where b.BEACONID = l.BEACONID 
+	and substr(l.MTIME, 12, 2) = #{mHour}
+	</select>
+	
+	<select id="getCount" resultType="int" parameterType="map">
+	select count(*) 
+	from beaconList b , locationList l 
+	where b.BEACONID = l.BEACONID
+	and substr(l.MTIME, 12, 2) = #{mHour}
+	and substr(l.MTIME, 1, 10) = #{inputDate}
+	and b.LAT = #{lat} and b.LNG = #{lng}
+	</select>
+	
+	<select id = "getIndividualPath" resultType="com.test.entity.IndividualLocationDTO" parameterType="map">
+	select l.userId as indvUserid, b.lat as indvLat, b.lng as indvLng
+	from beaconList b , locationList l
+	where b.BEACONID = l.BEACONID
+	and l.userId = #{indvUserid}
+	and substr(l.MTIME, 1, 10) = #{indvMtime}
+	and substr(l.MTIME, 12, 2) <![CDATA[ <= ]]> #{indvMhour}
+	</select>
+	
+	
+	<!-- (select count(*) from beaconList where lat = b.lat and lng = b.lng) as locationCount -->
+</mapper>
